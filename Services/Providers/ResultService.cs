@@ -30,18 +30,22 @@ namespace Services.Providers
 
         public void PrintResults()
         {
-            var columns = (results.OrderByDescending(result => result.Description.Length).First().Description.Length + 4, 20, 20);
+            var columns = (results.OrderByDescending(result => result.Description.Length).First().Description.Length + 10, 20, 20);
             Console.WriteLine("\n" + "* * * * * * * * * * RESULTS * * * * * * * * * *".Center(columns.Item1 + columns.Item2 + columns.Item3 + 2) + "\n");
             PrintLine(columns.Item1 + columns.Item2 + columns.Item3 + 2);
             PrintRow(columns, "Job", ORMType.Dapper.FormatString(), ORMType.EntityFrameWork.FormatString());
             PrintLine(columns.Item1 + columns.Item2 + columns.Item3 + 2);
 
-            results.Skip(1).GroupBy(result => result.Description).ToList().ForEach(group =>
+            results.GroupBy(result => result.Description)
+                .Skip(1)
+                .OrderBy(groups => groups.First().MethodType)
+                .ToList()
+                .ForEach(group =>
             {
-                var description = group.First().Description;
+                var description = group.Key;
                 var dapperAverage = group.Where(result => result.ORMType == ORMType.Dapper).Average(result => result.TimeStamp.TotalSeconds);
                 var efAverage = group.Where(result => result.ORMType == ORMType.EntityFrameWork).Average(result => result.TimeStamp.TotalSeconds);
-                PrintRow(columns, description, String.Format("{0:F3}", dapperAverage), String.Format("{0:F3}", efAverage));
+                PrintRow(columns, group.First().MethodType + ": " + description, String.Format("{0:F3}", dapperAverage), String.Format("{0:F3}", efAverage));
             });
 
             PrintLine(columns.Item1 + columns.Item2 + columns.Item3 + 2);
