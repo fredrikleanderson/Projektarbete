@@ -1,4 +1,6 @@
-﻿CREATE TABLE Users(
+﻿--Use this to set up your Dapper Database
+
+CREATE TABLE Users(
 	Id int PRIMARY KEY identity(1,1),
 	FirstName nvarchar(50),
 	LastName nvarchar(50),
