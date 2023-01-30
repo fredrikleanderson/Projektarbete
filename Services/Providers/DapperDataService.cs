@@ -9,7 +9,7 @@ using Services.Providers;
 
 namespace DapperConnection
 {
-    public class DapperDataService: ParentDataService, IDataService
+    public class DapperDataService: DataService, IDataService
     {
         public DapperDataService(
             DataContext context, 

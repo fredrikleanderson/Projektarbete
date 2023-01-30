@@ -9,10 +9,10 @@ var host = Host.CreateDefaultBuilder(args)
 
 await host.Services.GetRequiredService<IExecutor>().RunAsync(new Execution
 {
-    NumberOfRuns= 2,
-    NumberOfUsers= 1000,
-    NumberOfPostsPerUser= 2,
-    NumberOfUsersToGetById= 100,
-    NumberOfLikesPerUser= 10,
+    NumberOfRuns= 1,
+    NumberOfUsers= 10000,
+    NumberOfPostsPerUser= 1,
+    NumberOfUsersToGetById= 1000,
+    NumberOfLikesPerUser= 2,
     NumberOfMostLikedPosts= 100,
 });

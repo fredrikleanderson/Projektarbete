@@ -6,7 +6,7 @@ using Services.Interfaces;
 
 namespace Services.Providers
 {
-    public class EFDataService : ParentDataService, IDataService
+    public class EFDataService : DataService, IDataService
     {
         public EFDataService(
             DataContext context,
