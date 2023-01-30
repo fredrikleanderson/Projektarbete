@@ -13,7 +13,7 @@ using Services.Helpers;
 namespace ORMComparison
 {
 
-    public static class AppConfiguration
+    public static class HostConfig
     {
         public static IHostBuilder Configure(this IHostBuilder builder)
         {
@@ -33,13 +33,15 @@ namespace ORMComparison
                 services.AddSingleton<IQueryStringService, QueryStringService>();
                 services.AddSingleton<IMappingService, MappingService>();
                 services.AddSingleton<IResultService, ResultService>();
-                services.AddTransient<DapperDataService>();
-                services.AddTransient<EFDataService>();
-                services.AddSingleton<DataServiceResolver>(provider => key => key switch
+                services.AddScoped<DapperDataService>();
+                services.AddScoped<EFDataService>();
+                services.AddSingleton<DataServiceResolver>(provider => 
+                    ormType => 
+                    ormType switch
                 {
                     ORMType.Dapper => provider.GetRequiredService<DapperDataService>(),
                     ORMType.EntityFrameWork => provider.GetRequiredService<EFDataService>(),
-                    _ => throw new KeyNotFoundException(key.ToString())
+                    _ => throw new KeyNotFoundException(ormType.ToString())
                 });
                 services.AddSingleton<IExecutor, Executor>();
             })

@@ -36,9 +36,10 @@ namespace Services.Providers
             PrintRow(columns, "Job", ORMType.Dapper.FormatString(), ORMType.EntityFrameWork.FormatString());
             PrintLine(columns.Item1 + columns.Item2 + columns.Item3 + 2);
 
-            results.GroupBy(result => result.Description)
-                .Skip(1)
+            results.Skip(2)
+                .GroupBy(result => result.Description)
                 .OrderBy(groups => groups.First().MethodType)
+                .ThenByDescending(groups => groups.First().Description)
                 .ToList()
                 .ForEach(group =>
             {
@@ -62,15 +63,12 @@ namespace Services.Providers
             Console.WriteLine(new string('_', width));
         }
 
-        public class Result
+        public struct Result
         {
             public string Description { get; set; } = null!;
             public TimeSpan TimeStamp { get; set; }
             public ORMType ORMType { get; set; }
             public MethodType MethodType { get; set; }
-
-            public override string ToString() => $"Task completed: {ORMType.FormatString()} {MethodType} - {Description}... took {String.Format("{0:F3}", TimeStamp.TotalSeconds)} seconds to complete.";
-
             public Result(string description, TimeSpan timeStamp, ORMType ormType, MethodType methodType)
             {
                 Description = description;

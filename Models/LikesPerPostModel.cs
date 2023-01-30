@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Models
 {
-    public class LikesModel
+    public class LikesPerPostModel
     {
         public int Likes { get; set; }
         public PostModel Post { get; set; } = null!;

@@ -11,7 +11,7 @@ namespace ORMComparison
     {
         private readonly int numberOfUsers = 100;
         private readonly int numberOfLikesPerUser = 10;
-        private readonly int numberOfUsersToGetById = 100;
+        private readonly int numberOfUsersToGetById = 10;
         private readonly int numberOfMostLikedPosts = 10;
         private readonly IResultService _resultService;
         private readonly IDataService _dapperService;

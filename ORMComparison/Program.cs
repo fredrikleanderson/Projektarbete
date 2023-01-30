@@ -7,4 +7,4 @@ var builder = Host.CreateDefaultBuilder(args)
     .Configure()
     .Build();
 
-await builder.Services.GetRequiredService<IExecutor>().RunAsync(10);
+await builder.Services.GetRequiredService<IExecutor>().RunAsync(2);

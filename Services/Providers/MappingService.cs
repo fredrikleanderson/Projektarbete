@@ -70,11 +70,11 @@ namespace Services.Providers
             };
         }
 
-        public LikesModel MapPostWithLikes(IGrouping<int, Like> groupByLikes)
+        public LikesPerPostModel MapPostWithLikes(IGrouping<int, Like> groupByLikes)
         {
             var entry = groupByLikes.First();
 
-            return new LikesModel
+            return new LikesPerPostModel
             {
                 Likes = groupByLikes.Count(),
                 Post = new PostModel

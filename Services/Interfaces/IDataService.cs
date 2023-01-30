@@ -15,7 +15,7 @@ namespace Services.Interfaces
         Task<IEnumerable<UserModel>> GetAllUsersAsync();
         Task<IEnumerable<UserModel>> GetAllUsersByIdAsync(IEnumerable<UserModel> models);
         Task<IEnumerable<PostModel>> GetAllPostsAsync();
-        Task<IEnumerable<LikesModel>> GetMostLikedPosts(int numberOfPosts);
+        Task<IEnumerable<LikesPerPostModel>> GetMostLikedPosts(int numberOfPosts);
         Task PutAllUsersAsync(IEnumerable<UpdateUserModel> models);
         Task ClearAllTablesAsync();
     }

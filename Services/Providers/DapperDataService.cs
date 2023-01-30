@@ -9,7 +9,7 @@ using Services.Providers;
 
 namespace DapperConnection
 {
-    public class DapperDataService: BaseDataService, IDataService
+    public class DapperDataService: DataService, IDataService
     {
         public DapperDataService(
             DataContext context, 
@@ -84,7 +84,7 @@ namespace DapperConnection
             }
         }
 
-        public async Task<IEnumerable<LikesModel>> GetMostLikedPosts(int numberOfPosts)
+        public async Task<IEnumerable<LikesPerPostModel>> GetMostLikedPosts(int numberOfPosts)
         {
             using (var connection = new SqlConnection(_connectionString))
             {

@@ -7,7 +7,7 @@ using Services.Interfaces;
 
 namespace Services.Providers
 {
-    public class EFDataService : BaseDataService, IDataService
+    public class EFDataService : DataService, IDataService
     {
         public EFDataService(
             DataContext context,
@@ -66,7 +66,7 @@ namespace Services.Providers
             return posts.Select(post => _mappingService.MapPost(post, post.User));
         }
 
-        public async Task<IEnumerable<LikesModel>> GetMostLikedPosts(int numberOfPosts)
+        public async Task<IEnumerable<LikesPerPostModel>> GetMostLikedPosts(int numberOfPosts)
         {
             var likes = await _context.Likes
                 .Include(like => like.Post)
