@@ -9,10 +9,6 @@ namespace ORMComparison
 
     public class Executor: IExecutor
     {
-        private readonly int numberOfUsers = 100;
-        private readonly int numberOfLikesPerUser = 10;
-        private readonly int numberOfUsersToGetById = 10;
-        private readonly int numberOfMostLikedPosts = 10;
         private readonly IResultService _resultService;
         private readonly IDataService _dapperService;
         private readonly IDataService _entityFrameworkService;
@@ -24,20 +20,20 @@ namespace ORMComparison
             _entityFrameworkService = resolver(ORMType.EntityFrameWork);
         }
 
-        public async Task RunAsync(int numberOfTestRuns)
+        public async Task RunAsync(Execution execution)
         {
             await _dapperService.ClearAllTablesAsync();
             await _entityFrameworkService.ClearAllTablesAsync();
 
-            for (int i = 0; i < numberOfTestRuns + 1; i++)
+            for (int i = 0; i < execution.NumberOfRuns + 1; i++)
             {
-                _resultService.AddResults(await InsertUsersAsync(numberOfUsers));
+                _resultService.AddResults(await InsertUsersAsync(execution.NumberOfUsers));
                 _resultService.AddResults(await RetrieveAllUsersAsync());
-                _resultService.AddResults(await RetrieveAllUsersByIdAsync(numberOfUsersToGetById));
-                _resultService.AddResults(await InsertPostsAsync());
+                _resultService.AddResults(await RetrieveAllUsersByIdAsync(execution.NumberOfUsersToGetById));
+                _resultService.AddResults(await InsertPostsAsync(execution.NumberOfPostsPerUser));
                 _resultService.AddResults(await RetrieveAllPostsAsync());
-                _resultService.AddResults(await InsertLikesAsync(numberOfLikesPerUser));
-                _resultService.AddResults(await RetrieveMostLikedPostsAsync(numberOfMostLikedPosts));
+                _resultService.AddResults(await InsertLikesAsync(execution.NumberOfLikesPerUser));
+                _resultService.AddResults(await RetrieveMostLikedPostsAsync(execution.NumberOfMostLikedPosts));
                 _resultService.AddResults(await UpdateAllUsersAsync());
                 _resultService.AddResults(await ClearDatabaseAsync());
             }
@@ -72,13 +68,13 @@ namespace ORMComparison
             return new Result[] { dapperResult, efResult };
         }
 
-        private async Task<IEnumerable<Result>> InsertPostsAsync()
+        private async Task<IEnumerable<Result>> InsertPostsAsync(int numberOfPostsPerUser)
         {
-            var taskDescrption = "Inserting 1 post per user";
+            var taskDescrption = $"Inserting {numberOfPostsPerUser} post per user";
             var dapperUsers = await _dapperService.GetAllUsersAsync();
             var efUsers = await _entityFrameworkService.GetAllUsersAsync();
-            var dapperPosts = CreatePostModel.Factory.CreateRandomPosts(dapperUsers);
-            var efPosts = CreatePostModel.Factory.CreateRandomPosts(efUsers);
+            var dapperPosts = CreatePostModel.Factory.CreateRandomPosts(dapperUsers.ToArray(), numberOfPostsPerUser);
+            var efPosts = CreatePostModel.Factory.CreateRandomPosts(efUsers.ToArray(), numberOfPostsPerUser);
             var dapperResult = await _resultService.GetResultFromTaskAsync(_dapperService.PostPostsAsync(dapperPosts), taskDescrption, ORMType.Dapper, MethodType.CREATE);
             var efResult = await _resultService.GetResultFromTaskAsync(_entityFrameworkService.PostPostsAsync(efPosts), taskDescrption, ORMType.EntityFrameWork, MethodType.CREATE);
             return new Result[] { dapperResult, efResult };

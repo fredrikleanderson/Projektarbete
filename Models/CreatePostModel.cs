@@ -39,6 +39,17 @@ namespace Models
             {
                 return users.Select(user => CreateRandomPost(user));
             }
+
+            public static IEnumerable<CreatePostModel> CreateRandomPosts(UserModel[] users, int numberOfPostsPerUser)
+            {
+                for (int i = 0; i < numberOfPostsPerUser; i++)
+                {
+                    for (int j = 0; j < users.Length; j++)
+                    {
+                        yield return CreateRandomPost(users[j]);
+                    }
+                }
+            }
         }
     }
 }

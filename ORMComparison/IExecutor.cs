@@ -2,6 +2,6 @@
 {
     public interface IExecutor
     {
-        Task RunAsync(int numberOfTestRuns);
+        Task RunAsync(Execution execution);
     }
 }

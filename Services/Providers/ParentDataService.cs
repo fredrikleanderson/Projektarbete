@@ -9,14 +9,14 @@ using System.Threading.Tasks;
 
 namespace Services.Providers
 {
-    public abstract class DataService
+    public abstract class ParentDataService
     {
         protected readonly DataContext _context;
         protected readonly string _connectionString = null!;
         protected readonly IMappingService _mappingService;
         protected readonly IQueryStringService _queryStringService;
 
-        public DataService(DataContext context, IOptions<DatabaseSettings> dbOptions, IMappingService dataHandler, IQueryStringService queryStringService)
+        public ParentDataService(DataContext context, IOptions<DatabaseSettings> dbOptions, IMappingService dataHandler, IQueryStringService queryStringService)
         {
             _context = context;
             _connectionString = dbOptions.Value.ConnectionString;

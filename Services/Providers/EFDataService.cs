@@ -2,12 +2,11 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Models;
-using Models.Entities;
 using Services.Interfaces;
 
 namespace Services.Providers
 {
-    public class EFDataService : DataService, IDataService
+    public class EFDataService : ParentDataService, IDataService
     {
         public EFDataService(
             DataContext context,
