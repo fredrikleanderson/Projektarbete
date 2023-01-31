@@ -15,7 +15,7 @@ namespace DapperConnection
             DataContext context, 
             IOptions<DatabaseSettings> dbOptions, 
             IMappingService dataHandler, 
-            IQueryStringService queryStringService) : base(context, dbOptions, dataHandler, queryStringService) 
+            IQueryService queryStringService) : base(context, dbOptions, dataHandler, queryStringService) 
         { 
         
         }
@@ -24,7 +24,7 @@ namespace DapperConnection
         {
             using(var connection = new SqlConnection(_connectionString))
             {
-                await connection.QueryAsync(_queryStringService.InsertUsers(models.ToArray()));
+                await connection.QueryAsync(_queryService.InsertUsers(models.ToArray()));
             }
         }
 
@@ -32,7 +32,7 @@ namespace DapperConnection
         {
             using(var connection = new SqlConnection(_connectionString))
             {
-                await connection.QueryAsync(_queryStringService.InsertPosts(models.ToArray()));
+                await connection.QueryAsync(_queryService.InsertPosts(models.ToArray()));
             }
         }
 
@@ -40,7 +40,7 @@ namespace DapperConnection
         {
             using (var connection = new SqlConnection(_connectionString))
             {
-                await connection.QueryAsync(_queryStringService.InsertLikes(models.ToArray()));
+                await connection.QueryAsync(_queryService.InsertLikes(models.ToArray()));
             }
         }
 
@@ -48,7 +48,7 @@ namespace DapperConnection
         {
             using(var connection = new SqlConnection(_connectionString))
             {
-                var users = await connection.QueryAsync<User>(_queryStringService.SelectAllUsers());
+                var users = await connection.QueryAsync<User>(_queryService.SelectAllUsers());
                 return users.Select(user => _mappingService.MapUser(user));
             }
         }
@@ -61,7 +61,7 @@ namespace DapperConnection
             {
                 foreach (var model in models)
                 {
-                    var user = await connection.QuerySingleAsync<User>(_queryStringService.SelectUserById(model));
+                    var user = await connection.QuerySingleAsync<User>(_queryService.SelectUserById(model));
                     if (user != null)
                         result.Add(_mappingService.MapUser(user));
                 }
@@ -74,7 +74,7 @@ namespace DapperConnection
         {
             using (var connection = new SqlConnection(_connectionString))
             {
-                var posts = await connection.QueryAsync<Post, User, Post>(_queryStringService.SelectAllPosts(),
+                var posts = await connection.QueryAsync<Post, User, Post>(_queryService.SelectAllPosts(),
                     (post, user) =>
                     {
                         post.User = user;
@@ -88,7 +88,7 @@ namespace DapperConnection
         {
             using (var connection = new SqlConnection(_connectionString))
             {
-                var likes = await connection.QueryAsync<Like, Post, User, Like>(_queryStringService.SelectMostLikedPost(),
+                var likes = await connection.QueryAsync<Like, Post, User, Like>(_queryService.SelectMostLikedPost(),
                     (like, post, user) =>
                     {
                         like.Post = post;
@@ -111,7 +111,7 @@ namespace DapperConnection
             {
                 foreach (var model in models)
                 {
-                    await connection.QueryAsync(_queryStringService.UpdateSingleUser(model));
+                    await connection.QueryAsync(_queryService.UpdateSingleUser(model));
                 }
             }
         }
@@ -120,7 +120,7 @@ namespace DapperConnection
         {
             using (var connection = new SqlConnection(_connectionString))
             {
-                await connection.QueryAsync(_queryStringService.ClearDatabase());
+                await connection.QueryAsync(_queryService.ClearDatabase());
             }
         }
     }

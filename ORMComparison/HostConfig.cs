@@ -30,7 +30,7 @@ namespace ORMComparison
                 services.Configure<DatabaseSettings>(settings => settings.ConnectionString = configuration.GetConnectionString("Dapper") ?? "");
                 services.AddOptions();
 
-                services.AddSingleton<IQueryStringService, QueryStringService>();
+                services.AddSingleton<IQueryService, QueryService>();
                 services.AddSingleton<IMappingService, MappingService>();
                 services.AddSingleton<IResultService, ResultService>();
                 services.AddScoped<DapperDataService>();

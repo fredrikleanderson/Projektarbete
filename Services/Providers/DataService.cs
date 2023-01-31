@@ -15,14 +15,14 @@ namespace Services.Providers
         protected readonly DataContext _context;
         protected readonly string _connectionString = null!;
         protected readonly IMappingService _mappingService;
-        protected readonly IQueryStringService _queryStringService;
+        protected readonly IQueryService _queryService;
 
-        public DataService(DataContext context, IOptions<DatabaseSettings> dbOptions, IMappingService dataHandler, IQueryStringService queryStringService)
+        public DataService(DataContext context, IOptions<DatabaseSettings> dbOptions, IMappingService dataHandler, IQueryService queryService)
         {
             _context = context;
             _connectionString = dbOptions.Value.ConnectionString;
             _mappingService = dataHandler;
-            _queryStringService = queryStringService;
+            _queryService = queryService;
         }
 
         public abstract Task PostUsersAsync(IEnumerable<CreateUserModel> models);

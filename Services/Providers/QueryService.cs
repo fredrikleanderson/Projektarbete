@@ -8,7 +8,7 @@ using Services.Interfaces;
 
 namespace Services.Providers
 {
-    public class QueryStringService : IQueryStringService
+    public class QueryService : IQueryService
     {
         public string InsertUsers(CreateUserModel[] models)
         {

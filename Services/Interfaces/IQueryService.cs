@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Services.Interfaces
 {
-    public interface IQueryStringService
+    public interface IQueryService
     {
         string InsertUsers(CreateUserModel[] models);
         string InsertPosts(CreatePostModel[] models);

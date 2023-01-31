@@ -12,7 +12,7 @@ namespace Services.Providers
             DataContext context,
             IOptions<DatabaseSettings> dbOptions,
             IMappingService dataHandler,
-            IQueryStringService queryStringService) : base(context, dbOptions, dataHandler, queryStringService) 
+            IQueryService queryStringService) : base(context, dbOptions, dataHandler, queryStringService) 
         {
 
         }
