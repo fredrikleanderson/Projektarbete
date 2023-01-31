@@ -9,7 +9,7 @@ var host = Host.CreateDefaultBuilder(args)
 
 await host.Services.GetRequiredService<IExecutor>().RunAsync(new Execution
 {
-    NumberOfRuns= 1,
+    NumberOfRuns= 10,
     NumberOfUsers= 100_000,
     NumberOfPostingUsers = 10_000,
     NumberOfPostsPerUser= 10,
