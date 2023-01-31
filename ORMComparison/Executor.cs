@@ -30,11 +30,11 @@ namespace ORMComparison
                 _resultService.AddResults(await InsertUsersAsync(execution.NumberOfUsers));
                 _resultService.AddResults(await RetrieveAllUsersAsync());
                 _resultService.AddResults(await RetrieveAllUsersByIdAsync(execution.NumberOfUsersToGetById));
-                _resultService.AddResults(await InsertPostsAsync(execution.NumberOfPostsPerUser));
+                _resultService.AddResults(await InsertPostsAsync(execution.NumberOfPostingUsers, execution.NumberOfPostsPerUser));
                 _resultService.AddResults(await RetrieveAllPostsAsync());
-                _resultService.AddResults(await InsertLikesAsync(execution.NumberOfLikesPerUser));
+                _resultService.AddResults(await InsertLikesAsync(execution.NumberOfLikingUsers, execution.NumberOfLikesPerUser));
                 _resultService.AddResults(await RetrieveMostLikedPostsAsync(execution.NumberOfMostLikedPosts));
-                _resultService.AddResults(await UpdateAllUsersAsync());
+                _resultService.AddResults(await UpdateUsersAsync(execution.NumberOfUsersToUpdate));
                 _resultService.AddResults(await ClearDatabaseAsync());
             }
 
@@ -68,13 +68,13 @@ namespace ORMComparison
             return new Result[] { dapperResult, efResult };
         }
 
-        private async Task<IEnumerable<Result>> InsertPostsAsync(int numberOfPostsPerUser)
+        private async Task<IEnumerable<Result>> InsertPostsAsync(int numberOfPostingUsers, int numberOfPostsPerUser)
         {
-            var taskDescrption = $"Inserting {numberOfPostsPerUser} post per user";
+            var taskDescrption = $"Inserting {numberOfPostsPerUser} posts per user for {numberOfPostingUsers} users";
             var dapperUsers = await _dapperService.GetAllUsersAsync();
             var efUsers = await _entityFrameworkService.GetAllUsersAsync();
-            var dapperPosts = CreatePostModel.Factory.CreateRandomPosts(dapperUsers.ToArray(), numberOfPostsPerUser);
-            var efPosts = CreatePostModel.Factory.CreateRandomPosts(efUsers.ToArray(), numberOfPostsPerUser);
+            var dapperPosts = CreatePostModel.Factory.CreateRandomPosts(dapperUsers.Take(numberOfPostingUsers).ToArray(), numberOfPostsPerUser);
+            var efPosts = CreatePostModel.Factory.CreateRandomPosts(efUsers.Take(numberOfPostingUsers).ToArray(), numberOfPostsPerUser);
             var dapperResult = await _resultService.GetResultFromTaskAsync(_dapperService.PostPostsAsync(dapperPosts), taskDescrption, ORMType.Dapper, MethodType.CREATE);
             var efResult = await _resultService.GetResultFromTaskAsync(_entityFrameworkService.PostPostsAsync(efPosts), taskDescrption, ORMType.EntityFrameWork, MethodType.CREATE);
             return new Result[] { dapperResult, efResult };
@@ -88,15 +88,15 @@ namespace ORMComparison
             return new Result[] { dapperResult, efResult };
         }
 
-        private async Task<IEnumerable<Result>> InsertLikesAsync(int numberOfLikesPerUser)
+        private async Task<IEnumerable<Result>> InsertLikesAsync(int numberOfLikingUsers, int numberOfLikesPerUser)
         {
-            var taskDescription = $"Inserting {numberOfLikesPerUser} like{(numberOfLikesPerUser > 1 ? "s" : "")} per user";
+            var taskDescription = $"Inserting {numberOfLikesPerUser} like{(numberOfLikesPerUser > 1 ? "s" : "")} per user for {numberOfLikingUsers} users";
             var dapperUsers = await _dapperService.GetAllUsersAsync();
             var efUsers = await _entityFrameworkService.GetAllUsersAsync();
             var dapperPosts = _dapperService.GetAllPostsAsync().Result.ToArray();
             var efPosts = _entityFrameworkService.GetAllPostsAsync().Result.ToArray();
-            var dapperLikes = CreateLikeModel.Factory.CreateRandomLikes(dapperUsers, dapperPosts, numberOfLikesPerUser);
-            var efLikes = CreateLikeModel.Factory.CreateRandomLikes(efUsers, efPosts, numberOfLikesPerUser);
+            var dapperLikes = CreateLikeModel.Factory.CreateRandomLikes(dapperUsers.Take(numberOfLikingUsers), dapperPosts, numberOfLikesPerUser);
+            var efLikes = CreateLikeModel.Factory.CreateRandomLikes(efUsers.Take(numberOfLikingUsers), efPosts, numberOfLikesPerUser);
             var dapperResult = await _resultService.GetResultFromTaskAsync(_dapperService.PostLikesAsync(dapperLikes), taskDescription, ORMType.Dapper, MethodType.CREATE);
             var efResult = await _resultService.GetResultFromTaskAsync(_entityFrameworkService.PostLikesAsync(efLikes), taskDescription, ORMType.EntityFrameWork, MethodType.CREATE);
             return new Result[] { dapperResult, efResult };
@@ -104,19 +104,19 @@ namespace ORMComparison
 
         private async Task<IEnumerable<Result>> RetrieveMostLikedPostsAsync(int numberOfMostLikedPosts)
         {
-            var taskDescription = $"Retrieving {numberOfMostLikedPosts} most liked posts";
+            var taskDescription = $"Retrieving the {numberOfMostLikedPosts} most liked posts";
             var dapperResult = await _resultService.GetResultFromTaskAsync(_dapperService.GetMostLikedPosts(numberOfMostLikedPosts), taskDescription, ORMType.Dapper, MethodType.READ);
             var efResult = await _resultService.GetResultFromTaskAsync(_entityFrameworkService.GetMostLikedPosts(numberOfMostLikedPosts), taskDescription, ORMType.EntityFrameWork, MethodType.READ);
             return new Result[] { dapperResult, efResult };
         }
 
-        private async Task<IEnumerable<Result>> UpdateAllUsersAsync()
+        private async Task<IEnumerable<Result>> UpdateUsersAsync(int numberOfUsersToUpdate)
         {
-            var taskDescription = "Updating all users";
+            var taskDescription = $"Updating {numberOfUsersToUpdate} users";
             var dapperUsers = await _dapperService.GetAllUsersAsync();
             var efUsers = await _entityFrameworkService.GetAllUsersAsync();
-            var updatedDapperUsers = UpdateUserModel.Factory.UpdateUsersRandomly(dapperUsers);
-            var updatedEfUsers = UpdateUserModel.Factory.UpdateUsersRandomly(efUsers);
+            var updatedDapperUsers = UpdateUserModel.Factory.UpdateUsersRandomly(dapperUsers.Take(numberOfUsersToUpdate));
+            var updatedEfUsers = UpdateUserModel.Factory.UpdateUsersRandomly(efUsers.Take(numberOfUsersToUpdate));
             var dapperResult = await _resultService.GetResultFromTaskAsync(_dapperService.PutAllUsersAsync(updatedDapperUsers), taskDescription, ORMType.Dapper, MethodType.UPDATE);
             var efResult = await _resultService.GetResultFromTaskAsync(_entityFrameworkService.PutAllUsersAsync(updatedEfUsers), taskDescription, ORMType.EntityFrameWork, MethodType.UPDATE);
             return new Result[] { dapperResult, efResult };

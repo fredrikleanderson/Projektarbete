@@ -10,9 +10,12 @@ namespace ORMComparison
     {
         public int NumberOfRuns { get; set; }
         public int NumberOfUsers { get; set; }
+        public int NumberOfPostingUsers { get; set; }
         public int NumberOfPostsPerUser { get; set; }
         public int NumberOfUsersToGetById { get; set; }
+        public int NumberOfLikingUsers { get; set; }
         public int NumberOfLikesPerUser { get; set; }
         public int NumberOfMostLikedPosts { get; set; }
+        public int NumberOfUsersToUpdate { get; set; }
     }
 }

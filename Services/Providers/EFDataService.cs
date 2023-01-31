@@ -37,7 +37,7 @@ namespace Services.Providers
 
         public override async Task<IEnumerable<UserModel>> GetAllUsersAsync()
         {
-            var users = await _context.Users.ToListAsync();
+            var users = await _context.Users.AsNoTracking().ToListAsync();
             return users.Select(user => _mappingService.MapUser(user));
         }
 
