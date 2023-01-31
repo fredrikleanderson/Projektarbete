@@ -6,7 +6,7 @@ using Services.Interfaces;
 
 namespace Services.Providers
 {
-    public class EFDataService : DataService, IDataService
+    public class EFDataService : DataService
     {
         public EFDataService(
             DataContext context,
@@ -17,31 +17,31 @@ namespace Services.Providers
 
         }
 
-        public async Task PostUsersAsync(IEnumerable<CreateUserModel> models)
+        public override async Task PostUsersAsync(IEnumerable<CreateUserModel> models)
         {
             await _context.AddRangeAsync(models.Select(model => _mappingService.MapUser(model)));
             await _context.SaveChangesAsync();
         }
 
-        public async Task PostPostsAsync(IEnumerable<CreatePostModel> models)
+        public override async Task PostPostsAsync(IEnumerable<CreatePostModel> models)
         {
             await _context.AddRangeAsync(models.Select(model => _mappingService.MapPost(model)));
             await _context.SaveChangesAsync();
         }
 
-        public async Task PostLikesAsync(IEnumerable<CreateLikeModel> models)
+        public override async Task PostLikesAsync(IEnumerable<CreateLikeModel> models)
         {
             await _context.AddRangeAsync(models.Select(model => _mappingService.MapLike(model)));
             await _context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<UserModel>> GetAllUsersAsync()
+        public override async Task<IEnumerable<UserModel>> GetAllUsersAsync()
         {
             var users = await _context.Users.ToListAsync();
             return users.Select(user => _mappingService.MapUser(user));
         }
 
-        public async Task<IEnumerable<UserModel>> GetAllUsersByIdAsync(IEnumerable<UserModel> models)
+        public override async Task<IEnumerable<UserModel>> GetAllUsersByIdAsync(IEnumerable<UserModel> models)
         {
             _context.ChangeTracker.Clear();
             List<UserModel> result = new();
@@ -56,7 +56,7 @@ namespace Services.Providers
             return result;
         }
 
-        public async Task<IEnumerable<PostModel>> GetAllPostsAsync()
+        public override async Task<IEnumerable<PostModel>> GetAllPostsAsync()
         {
             var posts = await _context.Posts
                 .Include(post => post.User)
@@ -65,7 +65,7 @@ namespace Services.Providers
             return posts.Select(post => _mappingService.MapPost(post, post.User));
         }
 
-        public async Task<IEnumerable<LikesPerPostModel>> GetMostLikedPosts(int numberOfPosts)
+        public override async Task<IEnumerable<LikesPerPostModel>> GetMostLikedPosts(int numberOfPosts)
         {
             var likes = await _context.Likes
                 .Include(like => like.Post)
@@ -81,7 +81,7 @@ namespace Services.Providers
             return groups.Select(group => _mappingService.MapPostWithLikes(group));
         }
 
-        public async Task PutAllUsersAsync(IEnumerable<UpdateUserModel> models)
+        public override async Task PutAllUsersAsync(IEnumerable<UpdateUserModel> models)
         {
             foreach (var model in models)
             {
@@ -96,7 +96,7 @@ namespace Services.Providers
             await _context.SaveChangesAsync();
         }
 
-        public async Task ClearAllTablesAsync()
+        public override async Task ClearAllTablesAsync()
         {
             await _context.Likes.ExecuteDeleteAsync();
             await _context.Posts.ExecuteDeleteAsync();

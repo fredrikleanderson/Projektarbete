@@ -9,7 +9,7 @@ using Services.Providers;
 
 namespace DapperConnection
 {
-    public class DapperDataService: DataService, IDataService
+    public class DapperDataService: DataService
     {
         public DapperDataService(
             DataContext context, 
@@ -20,7 +20,7 @@ namespace DapperConnection
         
         }
 
-        public async Task PostUsersAsync(IEnumerable<CreateUserModel> models)
+        public override async Task PostUsersAsync(IEnumerable<CreateUserModel> models)
         {
             using(var connection = new SqlConnection(_connectionString))
             {
@@ -28,7 +28,7 @@ namespace DapperConnection
             }
         }
 
-        public async Task PostPostsAsync(IEnumerable<CreatePostModel> models)
+        public override async Task PostPostsAsync(IEnumerable<CreatePostModel> models)
         {
             using(var connection = new SqlConnection(_connectionString))
             {
@@ -36,7 +36,7 @@ namespace DapperConnection
             }
         }
 
-        public async Task PostLikesAsync(IEnumerable<CreateLikeModel> models)
+        public override async Task PostLikesAsync(IEnumerable<CreateLikeModel> models)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
@@ -44,7 +44,7 @@ namespace DapperConnection
             }
         }
 
-        public async Task<IEnumerable<UserModel>> GetAllUsersAsync()
+        public override async Task<IEnumerable<UserModel>> GetAllUsersAsync()
         {
             using(var connection = new SqlConnection(_connectionString))
             {
@@ -53,7 +53,7 @@ namespace DapperConnection
             }
         }
 
-        public async Task<IEnumerable<UserModel>> GetAllUsersByIdAsync(IEnumerable<UserModel> models)
+        public override async Task<IEnumerable<UserModel>> GetAllUsersByIdAsync(IEnumerable<UserModel> models)
         {
             List<UserModel> result = new();
 
@@ -70,7 +70,7 @@ namespace DapperConnection
             return result;
         }
 
-        public async Task<IEnumerable<PostModel>> GetAllPostsAsync()
+        public override async Task<IEnumerable<PostModel>> GetAllPostsAsync()
         {
             using (var connection = new SqlConnection(_connectionString))
             {
@@ -84,7 +84,7 @@ namespace DapperConnection
             }
         }
 
-        public async Task<IEnumerable<LikesPerPostModel>> GetMostLikedPosts(int numberOfPosts)
+        public override async Task<IEnumerable<LikesPerPostModel>> GetMostLikedPosts(int numberOfPosts)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
@@ -105,7 +105,7 @@ namespace DapperConnection
             }
         }
 
-        public async Task PutAllUsersAsync(IEnumerable<UpdateUserModel> models)
+        public override async Task PutAllUsersAsync(IEnumerable<UpdateUserModel> models)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
@@ -116,7 +116,7 @@ namespace DapperConnection
             }
         }
 
-        public async Task ClearAllTablesAsync()
+        public override async Task ClearAllTablesAsync()
         {
             using (var connection = new SqlConnection(_connectionString))
             {

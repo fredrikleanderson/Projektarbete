@@ -1,5 +1,6 @@
 ﻿using Data;
 using Microsoft.Extensions.Options;
+using Models;
 using Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Services.Providers
 {
-    public abstract class DataService
+    public abstract class DataService: IDataService
     {
         protected readonly DataContext _context;
         protected readonly string _connectionString = null!;
@@ -23,5 +24,15 @@ namespace Services.Providers
             _mappingService = dataHandler;
             _queryStringService = queryStringService;
         }
+
+        public abstract Task PostUsersAsync(IEnumerable<CreateUserModel> models);
+        public abstract Task PostPostsAsync(IEnumerable<CreatePostModel> models);
+        public abstract Task PostLikesAsync(IEnumerable<CreateLikeModel> models);
+        public abstract Task<IEnumerable<UserModel>> GetAllUsersAsync();
+        public abstract Task<IEnumerable<UserModel>> GetAllUsersByIdAsync(IEnumerable<UserModel> models);
+        public abstract Task<IEnumerable<PostModel>> GetAllPostsAsync();
+        public abstract Task<IEnumerable<LikesPerPostModel>> GetMostLikedPosts(int numberOfPosts);
+        public abstract Task PutAllUsersAsync(IEnumerable<UpdateUserModel> models);
+        public abstract Task ClearAllTablesAsync();
     }
 }
