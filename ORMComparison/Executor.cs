@@ -28,14 +28,14 @@ namespace ORMComparison
             for (int i = 0; i < execution.NumberOfRuns + 1; i++)
             {
                 _resultService.AddResults(await InsertUsersAsync(execution.NumberOfUsers));
-                //_resultService.AddResults(await RetrieveAllUsersAsync());
-                //_resultService.AddResults(await RetrieveUsersByIdAsync(execution.NumberOfUsersToGetById));
-                //_resultService.AddResults(await InsertPostsAsync(execution.NumberOfPostingUsers, execution.NumberOfPostsPerUser));
-                //_resultService.AddResults(await RetrieveAllPostsAsync());
-                //_resultService.AddResults(await InsertLikesAsync(execution.NumberOfLikingUsers, execution.NumberOfLikesPerUser));
-                //_resultService.AddResults(await RetrieveMostLikedPostsAsync(execution.NumberOfMostLikedPosts));
+                _resultService.AddResults(await RetrieveAllUsersAsync());
+                _resultService.AddResults(await RetrieveUsersByIdAsync(execution.NumberOfUsersToGetById));
+                _resultService.AddResults(await InsertPostsAsync(execution.NumberOfPostingUsers, execution.NumberOfPostsPerUser));
+                _resultService.AddResults(await RetrieveAllPostsAsync());
+                _resultService.AddResults(await InsertLikesAsync(execution.NumberOfLikingUsers, execution.NumberOfLikesPerUser));
+                _resultService.AddResults(await RetrieveMostLikedPostsAsync(execution.NumberOfMostLikedPosts));
                 _resultService.AddResults(await UpdateUsersAsync(execution.NumberOfUsersToUpdate));
-                //_resultService.AddResults(await ClearDatabaseAsync());
+                _resultService.AddResults(await ClearDatabaseAsync());
             }
 
             _resultService.PrintResults();

@@ -21,10 +21,14 @@ GO
 CREATE OR ALTER PROCEDURE GetMostLikedPosts @Quantity INT
 AS
 SET NOCOUNT ON
-SELECT TOP (@Quantity) COUNT(l.Id) AS Likes, 
-	MAX(p.Id) AS PostId, 
-	MAX(p.Text) AS Text, 
-	MAX(u.Id) AS UserId, 
+SELECT TOP (@Quantity) 
+	COUNT(l.Id) AS Likes,
+	MAX(l.PostId) AS PostId,
+	MAX(l.UserId) AS UserId,
+	MAX(p.Id) AS Id, 
+	MAX(p.Text) AS Text,
+	MAX(p.UserId) AS UserId,
+	MAX(u.Id) AS Id, 
 	MAX(u.FirstName) AS FirstName, 
 	MAX(u.LastName) AS LastName, 
 	MAX(u.Email) AS Email 

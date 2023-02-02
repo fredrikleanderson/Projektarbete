@@ -92,22 +92,6 @@ namespace DapperConnection
             {
                 return await connection.QueryAsync<int, Post, User, LikesPerPostModel>(_queryService.SelectMostLikedPosts(numberOfPosts),
                     (likes, post, user) => _mappingService.MapLikesPerPost(likes, post, user));
-
-
-                //var likes = await connection.QueryAsync<Like, Post, User, Like>(_queryService.SelectMostLikedPosts(),
-                //    (like, post, user) =>
-                //    {
-                //        like.Post = post;
-                //        like.Post.User = user;
-                //        return like;
-                //    });
-
-                //var groups = likes
-                //    .GroupBy(key => key.PostId)
-                //    .OrderByDescending(group => group.Count())
-                //    .Take(numberOfPosts);
-
-                //return groups.Select(group => _mappingService.MapPostWithLikes(group));
             }
         }
 
