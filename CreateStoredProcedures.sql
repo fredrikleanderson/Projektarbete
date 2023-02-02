@@ -1,22 +1,26 @@
 ﻿CREATE OR ALTER PROCEDURE GetAllUsers
 AS
+SET NOCOUNT ON
 SELECT Id, FirstName, LastName, Email FROM Users
 GO
 
 CREATE OR ALTER PROCEDURE GetUserById @Id INT
 AS
+SET NOCOUNT ON
 SELECT Id, FirstName, LastName, Email FROM Users
 WHERE Id = @Id
 GO
 
 CREATE OR ALTER PROCEDURE GetAllPosts
 AS
+SET NOCOUNT ON
 SELECT Posts.Id, Text, Users.Id, FirstName, LastName, Email FROM Posts
 JOIN Users ON Posts.UserId = Users.Id
 GO
 
 CREATE OR ALTER PROCEDURE GetMostLikedPosts @Quantity INT
 AS
+SET NOCOUNT ON
 SELECT TOP (@Quantity) COUNT(l.Id) AS Likes, 
 	MAX(p.Id) AS PostId, 
 	MAX(p.Text) AS Text, 
@@ -33,6 +37,7 @@ GO
 
 CREATE OR ALTER PROCEDURE PutUser @Id INT, @NewFirstName NVARCHAR(50), @NewLastName NVARCHAR(50), @NewEmail NVARCHAR(50), @NewPassword NVARCHAR(50)
 AS
+SET NOCOUNT ON
 UPDATE Users
 SET FirstName = @NewFirstName, LastName = @NewLastName, Email = @NewEmail, Password = @NewPassword
 WHERE Id = @Id
@@ -40,6 +45,7 @@ GO
 
 CREATE OR ALTER PROCEDURE ClearAllTables
 AS
+SET NOCOUNT ON
 DELETE FROM Likes
 DELETE FROM Posts
 DELETE FROM Users
