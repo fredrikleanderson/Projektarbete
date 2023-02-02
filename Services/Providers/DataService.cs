@@ -29,10 +29,10 @@ namespace Services.Providers
         public abstract Task PostPostsAsync(IEnumerable<CreatePostModel> models);
         public abstract Task PostLikesAsync(IEnumerable<CreateLikeModel> models);
         public abstract Task<IEnumerable<UserModel>> GetAllUsersAsync();
-        public abstract Task<IEnumerable<UserModel>> GetAllUsersByIdAsync(IEnumerable<UserModel> models);
+        public abstract Task<IEnumerable<UserModel>> GetUsersByIdAsync(IEnumerable<UserModel> models);
         public abstract Task<IEnumerable<PostModel>> GetAllPostsAsync();
         public abstract Task<IEnumerable<LikesPerPostModel>> GetMostLikedPosts(int numberOfPosts);
-        public abstract Task PutAllUsersAsync(IEnumerable<UpdateUserModel> models);
+        public abstract Task PutUsersAsync(IEnumerable<UpdateUserModel> models);
         public abstract Task ClearAllTablesAsync();
     }
 }

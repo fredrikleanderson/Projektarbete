@@ -41,7 +41,7 @@ namespace Services.Providers
             return users.Select(user => _mappingService.MapUser(user));
         }
 
-        public override async Task<IEnumerable<UserModel>> GetAllUsersByIdAsync(IEnumerable<UserModel> models)
+        public override async Task<IEnumerable<UserModel>> GetUsersByIdAsync(IEnumerable<UserModel> models)
         {
             _context.ChangeTracker.Clear();
             List<UserModel> result = new();
@@ -73,15 +73,19 @@ namespace Services.Providers
                 .AsNoTracking()
                 .ToListAsync();
 
-            var groups = likes
+            return likes
                 .GroupBy(key => key.PostId)
                 .OrderByDescending(group => group.Count())
-                .Take(numberOfPosts);
-
-            return groups.Select(group => _mappingService.MapPostWithLikes(group));
+                .Take(numberOfPosts)
+                .Select(group =>
+                {
+                    var numberOfLikes = group.Count();
+                    var entry = group.First();
+                    return _mappingService.MapLikesPerPost(numberOfLikes, entry.Post, entry.User);
+                });
         }
 
-        public override async Task PutAllUsersAsync(IEnumerable<UpdateUserModel> models)
+        public override async Task PutUsersAsync(IEnumerable<UpdateUserModel> models)
         {
             foreach (var model in models)
             {

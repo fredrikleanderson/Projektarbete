@@ -64,34 +64,14 @@ namespace Services.Providers
             return stringBuilder.ToString();
         }
 
-        public string SelectAllUsers() => "SELECT Id, FirstName, LastName, Email FROM Users";
-        public string SelectUserById(UserModel model) => $"SELECT Id, FirstName, LastName, Email FROM Users WHERE Id = {model.Id}";
-        public string SelectAllPosts()
-        {
-            return "SELECT Posts.Id, Text, Users.Id, FirstName, LastName, Email FROM Posts " +
-                "JOIN Users ON Posts.UserId = Users.Id";
-        }
-
-        public string SelectMostLikedPost()
-        {
-            return $"SELECT l.Id, l.PostId, l.UserId, p.Id, p.Text, p.UserId, u.Id, u.FirstName, u.LastName, u.Email FROM Likes l " +
-                $"JOIN Posts p ON l.PostId = p.Id " +
-                $"JOIN Users u ON p.UserId = u.Id";
-        }
-
+        public string SelectAllUsers() => "EXEC GetAllUsers";
+        public string SelectUserById(UserModel model) => $"EXEC GetUserById {model.Id}";
+        public string SelectAllPosts() => $"EXEC GetAllPosts";
+        public string SelectMostLikedPosts(int quantity) => $"EXEC GetMostLikedPosts {quantity}";
         public string UpdateSingleUser(UpdateUserModel model)
         {
-            return $"UPDATE Users " +
-                $"SET FirstName = '{model.NewFirstName}', LastName = '{model.NewLastName}', Email = '{model.NewEmail}', Password = '{model.NewPassword}' " +
-                $"WHERE Id = {model.Id}";
+            return $"Exec PutUser {model.Id}, '{model.NewFirstName}', '{model.NewLastName}', '{model.NewEmail}', '{model.NewPassword}'";
         }
-
-        public string ClearDatabase() => $"{DeleteLikes()}{DeletePosts()}{DeleteUsers()}";
-
-        private string DeleteLikes() => "DELETE FROM Likes; ";
-
-        private string DeletePosts() => "DELETE FROM Posts; ";
-
-        private string DeleteUsers() => "DELETE FROM Users; ";
+        public string ClearDatabase() => $"EXEC ClearAllTables";
     }
 }

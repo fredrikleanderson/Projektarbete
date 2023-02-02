@@ -28,14 +28,14 @@ namespace ORMComparison
             for (int i = 0; i < execution.NumberOfRuns + 1; i++)
             {
                 _resultService.AddResults(await InsertUsersAsync(execution.NumberOfUsers));
-                _resultService.AddResults(await RetrieveAllUsersAsync());
-                _resultService.AddResults(await RetrieveAllUsersByIdAsync(execution.NumberOfUsersToGetById));
-                _resultService.AddResults(await InsertPostsAsync(execution.NumberOfPostingUsers, execution.NumberOfPostsPerUser));
-                _resultService.AddResults(await RetrieveAllPostsAsync());
-                _resultService.AddResults(await InsertLikesAsync(execution.NumberOfLikingUsers, execution.NumberOfLikesPerUser));
-                _resultService.AddResults(await RetrieveMostLikedPostsAsync(execution.NumberOfMostLikedPosts));
+                //_resultService.AddResults(await RetrieveAllUsersAsync());
+                //_resultService.AddResults(await RetrieveUsersByIdAsync(execution.NumberOfUsersToGetById));
+                //_resultService.AddResults(await InsertPostsAsync(execution.NumberOfPostingUsers, execution.NumberOfPostsPerUser));
+                //_resultService.AddResults(await RetrieveAllPostsAsync());
+                //_resultService.AddResults(await InsertLikesAsync(execution.NumberOfLikingUsers, execution.NumberOfLikesPerUser));
+                //_resultService.AddResults(await RetrieveMostLikedPostsAsync(execution.NumberOfMostLikedPosts));
                 _resultService.AddResults(await UpdateUsersAsync(execution.NumberOfUsersToUpdate));
-                _resultService.AddResults(await ClearDatabaseAsync());
+                //_resultService.AddResults(await ClearDatabaseAsync());
             }
 
             _resultService.PrintResults();
@@ -58,13 +58,13 @@ namespace ORMComparison
             return new Result[] { dapperResult, efResult };
         }
 
-        private async Task<IEnumerable<Result>> RetrieveAllUsersByIdAsync(int numberOfUsersToGetById)
+        private async Task<IEnumerable<Result>> RetrieveUsersByIdAsync(int numberOfUsersToGetById)
         {
             var taskDescription = $"Retrieving {numberOfUsersToGetById} users by their ID";
             var dapperUsers = await _dapperService.GetAllUsersAsync();
             var efUsers = await _entityFrameworkService.GetAllUsersAsync();
-            var dapperResult = await _resultService.GetResultFromTaskAsync(_dapperService.GetAllUsersByIdAsync(dapperUsers.Take(numberOfUsersToGetById)), taskDescription, ORMType.Dapper, MethodType.READ);
-            var efResult = await _resultService.GetResultFromTaskAsync(_entityFrameworkService.GetAllUsersByIdAsync(efUsers.Take(numberOfUsersToGetById)), taskDescription, ORMType.EntityFrameWork, MethodType.READ);
+            var dapperResult = await _resultService.GetResultFromTaskAsync(_dapperService.GetUsersByIdAsync(dapperUsers.Take(numberOfUsersToGetById)), taskDescription, ORMType.Dapper, MethodType.READ);
+            var efResult = await _resultService.GetResultFromTaskAsync(_entityFrameworkService.GetUsersByIdAsync(efUsers.Take(numberOfUsersToGetById)), taskDescription, ORMType.EntityFrameWork, MethodType.READ);
             return new Result[] { dapperResult, efResult };
         }
 
@@ -117,8 +117,8 @@ namespace ORMComparison
             var efUsers = await _entityFrameworkService.GetAllUsersAsync();
             var updatedDapperUsers = UpdateUserModel.Factory.UpdateUsersRandomly(dapperUsers.Take(numberOfUsersToUpdate));
             var updatedEfUsers = UpdateUserModel.Factory.UpdateUsersRandomly(efUsers.Take(numberOfUsersToUpdate));
-            var dapperResult = await _resultService.GetResultFromTaskAsync(_dapperService.PutAllUsersAsync(updatedDapperUsers), taskDescription, ORMType.Dapper, MethodType.UPDATE);
-            var efResult = await _resultService.GetResultFromTaskAsync(_entityFrameworkService.PutAllUsersAsync(updatedEfUsers), taskDescription, ORMType.EntityFrameWork, MethodType.UPDATE);
+            var dapperResult = await _resultService.GetResultFromTaskAsync(_dapperService.PutUsersAsync(updatedDapperUsers), taskDescription, ORMType.Dapper, MethodType.UPDATE);
+            var efResult = await _resultService.GetResultFromTaskAsync(_entityFrameworkService.PutUsersAsync(updatedEfUsers), taskDescription, ORMType.EntityFrameWork, MethodType.UPDATE);
             return new Result[] { dapperResult, efResult };
         }
 

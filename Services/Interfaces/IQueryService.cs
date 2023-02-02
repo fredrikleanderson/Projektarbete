@@ -15,7 +15,7 @@ namespace Services.Interfaces
         string SelectAllUsers();
         string SelectUserById(UserModel model);
         string SelectAllPosts();
-        string SelectMostLikedPost();
+        string SelectMostLikedPosts(int quantity);
         string UpdateSingleUser(UpdateUserModel model);
         string ClearDatabase();
     }

@@ -12,6 +12,6 @@ namespace Services.Interfaces
         Post MapPost(CreatePostModel model);
         PostModel MapPost(Post post, User user);
         Like MapLike(CreateLikeModel model);
-        LikesPerPostModel MapPostWithLikes(IGrouping<int, Like> likes);
+        LikesPerPostModel MapLikesPerPost(int likes, Post post, User user);
     }
 }

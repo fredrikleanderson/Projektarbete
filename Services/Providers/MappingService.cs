@@ -70,23 +70,21 @@ namespace Services.Providers
             };
         }
 
-        public LikesPerPostModel MapPostWithLikes(IGrouping<int, Like> groupByLikes)
+        public LikesPerPostModel MapLikesPerPost(int likes, Post post, User user)
         {
-            var entry = groupByLikes.First();
-
             return new LikesPerPostModel
             {
-                Likes = groupByLikes.Count(),
+                Likes= likes,
                 Post = new PostModel
                 {
-                    Id = entry.Post.Id,
-                    Text = entry.Post.Text,
-                    User = new UserModel
-                    {
-                        Id = entry.Post.User.Id,
-                        FirstName = entry.Post.User.FirstName,
-                        LastName = entry.Post.User.LastName,
-                        Email = entry.Post.User.Email
+                    Id = post.Id,
+                    Text = post.Text,
+                    User = new UserModel 
+                    { 
+                        Id = user.Id,
+                        FirstName = user.FirstName,
+                        LastName = user.LastName,
+                        Email = user.Email
                     }
                 }
             };

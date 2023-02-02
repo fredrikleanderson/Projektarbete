@@ -53,7 +53,7 @@ namespace DapperConnection
             }
         }
 
-        public override async Task<IEnumerable<UserModel>> GetAllUsersByIdAsync(IEnumerable<UserModel> models)
+        public override async Task<IEnumerable<UserModel>> GetUsersByIdAsync(IEnumerable<UserModel> models)
         {
             List<UserModel> result = new();
 
@@ -84,28 +84,34 @@ namespace DapperConnection
             }
         }
 
+
+
         public override async Task<IEnumerable<LikesPerPostModel>> GetMostLikedPosts(int numberOfPosts)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
-                var likes = await connection.QueryAsync<Like, Post, User, Like>(_queryService.SelectMostLikedPost(),
-                    (like, post, user) =>
-                    {
-                        like.Post = post;
-                        like.Post.User = user;
-                        return like;
-                    });
+                return await connection.QueryAsync<int, Post, User, LikesPerPostModel>(_queryService.SelectMostLikedPosts(numberOfPosts),
+                    (likes, post, user) => _mappingService.MapLikesPerPost(likes, post, user));
 
-                var groups = likes
-                    .GroupBy(key => key.PostId)
-                    .OrderByDescending(group => group.Count())
-                    .Take(numberOfPosts);
 
-                return groups.Select(group => _mappingService.MapPostWithLikes(group));
+                //var likes = await connection.QueryAsync<Like, Post, User, Like>(_queryService.SelectMostLikedPosts(),
+                //    (like, post, user) =>
+                //    {
+                //        like.Post = post;
+                //        like.Post.User = user;
+                //        return like;
+                //    });
+
+                //var groups = likes
+                //    .GroupBy(key => key.PostId)
+                //    .OrderByDescending(group => group.Count())
+                //    .Take(numberOfPosts);
+
+                //return groups.Select(group => _mappingService.MapPostWithLikes(group));
             }
         }
 
-        public override async Task PutAllUsersAsync(IEnumerable<UpdateUserModel> models)
+        public override async Task PutUsersAsync(IEnumerable<UpdateUserModel> models)
         {
             using (var connection = new SqlConnection(_connectionString))
             {

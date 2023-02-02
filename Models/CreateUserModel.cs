@@ -13,6 +13,11 @@ namespace Models
         public string Email { get; set; } = null!;
         public string Password { get; set; } = null!;
 
+        public override string ToString()
+        {
+            return $"{FirstName}-{LastName}-{Email}-{Password}";
+        }
+
         public static class Factory
         {
             private static Random random = new();
@@ -38,6 +43,7 @@ namespace Models
             {
                 return Enumerable.Range(0, quantity).Select(element => GetRandomUser());         
             }
+
         }
     }
 }
