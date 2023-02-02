@@ -12,7 +12,7 @@ namespace Services.Providers
     {
         public string InsertUsers(CreateUserModel[] models)
         {
-            StringBuilder stringBuilder = new();
+            StringBuilder stringBuilder = new("SET NOCOUNT ON\n");
             var chunks = models.Chunk(1000);
 
             foreach (var chunk in chunks)
@@ -30,7 +30,7 @@ namespace Services.Providers
 
         public string InsertPosts(CreatePostModel[] models)
         {
-            StringBuilder stringBuilder = new();
+            StringBuilder stringBuilder = new("SET NOCOUNT ON\n");
             var chunks = models.Chunk(1000);
 
             foreach (var chunk in chunks)
@@ -48,7 +48,7 @@ namespace Services.Providers
 
         public string InsertLikes(CreateLikeModel[] models)
         {
-            StringBuilder stringBuilder = new();
+            StringBuilder stringBuilder = new("SET NOCOUNT ON\n");
             var chunks = models.Chunk(1000);
 
             foreach (var chunk in chunks)
