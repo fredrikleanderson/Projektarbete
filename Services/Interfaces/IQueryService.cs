@@ -13,10 +13,11 @@ namespace Services.Interfaces
         string InsertPosts(CreatePostModel[] models);
         string InsertLikes(CreateLikeModel[] models);
         string SelectAllUsers();
-        string SelectUserById(UserModel model);
+        string SelectUserWithPosts(int userId);
         string SelectAllPosts();
         string SelectMostLikedPosts(int quantity);
         string UpdateSingleUser(UpdateUserModel model);
+        string DeleteUserPosts(int userId);
         string ClearDatabase();
     }
 }

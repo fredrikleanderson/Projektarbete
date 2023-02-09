@@ -66,12 +66,15 @@ namespace Services.Providers
 
         public string SelectAllUsers() => "EXEC GetAllUsers";
         public string SelectUserById(UserModel model) => $"EXEC GetUserById {model.Id}";
+        public string SelectUserWithPosts(int userId) => $"EXEC GetUserPage {userId}";
         public string SelectAllPosts() => $"EXEC GetAllPosts";
         public string SelectMostLikedPosts(int quantity) => $"EXEC GetMostLikedPosts {quantity}";
         public string UpdateSingleUser(UpdateUserModel model)
         {
             return $"Exec PutUser {model.Id}, '{model.NewFirstName}', '{model.NewLastName}', '{model.NewEmail}', '{model.NewPassword}'";
         }
+
+        public string DeleteUserPosts(int userId) => $"EXEC DeleteUserPosts {userId}";
         public string ClearDatabase() => $"EXEC ClearAllTables";
     }
 }

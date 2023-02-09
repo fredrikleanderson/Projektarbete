@@ -4,11 +4,12 @@ SET NOCOUNT ON
 SELECT Id, FirstName, LastName, Email FROM Users
 GO
 
-CREATE OR ALTER PROCEDURE GetUserById @Id INT
+CREATE OR ALTER PROCEDURE GetUserPage @Id INT
 AS
 SET NOCOUNT ON
-SELECT Id, FirstName, LastName, Email FROM Users
-WHERE Id = @Id
+SELECT p.Id, p.UserId, p.Text, u.Id, u.FirstName, u.LastName, u.Email FROM Posts p
+JOIN Users u ON p.UserId = u.Id
+WHERE u.Id = @Id
 GO
 
 CREATE OR ALTER PROCEDURE GetAllPosts
@@ -45,6 +46,12 @@ SET NOCOUNT ON
 UPDATE Users
 SET FirstName = @NewFirstName, LastName = @NewLastName, Email = @NewEmail, Password = @NewPassword
 WHERE Id = @Id
+GO
+
+CREATE OR ALTER PROCEDURE DeleteUserPosts @UserId INT
+AS
+SET NOCOUNT ON
+DELETE FROM Posts WHERE UserId = @UserId
 GO
 
 CREATE OR ALTER PROCEDURE ClearAllTables

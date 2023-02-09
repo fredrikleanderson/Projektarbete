@@ -11,11 +11,12 @@ await host.Services.GetRequiredService<IExecutor>().RunAsync(new Execution
 {
     NumberOfRuns= 1,
     NumberOfUsers= 1000,
-    NumberOfPostingUsers = 100,
+    NumberOfPostingUsers = 1000,
     NumberOfPostsPerUser= 10,
-    NumberOfUsersToGetById= 100,
+    NumberOfUserPages= 1000,
     NumberOfLikingUsers = 1000,
     NumberOfLikesPerUser= 10,
     NumberOfMostLikedPosts= 100,
     NumberOfUsersToUpdate= 1000,
+    NumberOfUsersDeletingTheirPosts = 1000
 });

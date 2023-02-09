@@ -12,13 +12,13 @@ GO
 CREATE TABLE Posts(
 	Id int PRIMARY KEY identity(1,1),
 	Text nvarchar(max),
-	UserId int REFERENCES Users(Id)
+	UserId int REFERENCES Users(Id) ON DELETE CASCADE
 )
 GO
 
 CREATE TABLE Likes(
 	Id int PRIMARY KEY identity(1,1),
-	PostId int REFERENCES Posts(Id),
+	PostId int REFERENCES Posts(Id) ON DELETE CASCADE,
 	UserId int REFERENCES Users(Id),
 )
 GO

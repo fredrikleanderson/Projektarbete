@@ -19,38 +19,45 @@ namespace Services.Providers
 
         public override async Task PostUsersAsync(IEnumerable<CreateUserModel> models)
         {
+            _context.ChangeTracker.Clear();
             await _context.AddRangeAsync(models.Select(model => _mappingService.MapUser(model)));
             await _context.SaveChangesAsync();
         }
 
         public override async Task PostPostsAsync(IEnumerable<CreatePostModel> models)
         {
+            _context.ChangeTracker.Clear();
             await _context.AddRangeAsync(models.Select(model => _mappingService.MapPost(model)));
             await _context.SaveChangesAsync();
         }
 
         public override async Task PostLikesAsync(IEnumerable<CreateLikeModel> models)
         {
+            _context.ChangeTracker.Clear();
             await _context.AddRangeAsync(models.Select(model => _mappingService.MapLike(model)));
             await _context.SaveChangesAsync();
         }
 
         public override async Task<IEnumerable<UserModel>> GetAllUsersAsync()
         {
+            _context.ChangeTracker.Clear();
             var users = await _context.Users.AsNoTracking().ToListAsync();
             return users.Select(user => _mappingService.MapUser(user));
         }
 
-        public override async Task<IEnumerable<UserModel>> GetUsersByIdAsync(IEnumerable<UserModel> models)
+        public override async Task<IEnumerable<UserPageModel>> GetUserPages(IEnumerable<int> ids)
         {
             _context.ChangeTracker.Clear();
-            List<UserModel> result = new();
+            List<UserPageModel> result = new();
 
-            foreach (var model in models)
+            foreach (var id in ids)
             {
-                var user = await _context.Users.FindAsync(model.Id);
-                if(user != null)
-                    result.Add(_mappingService.MapUser(user));
+                var posts = await _context.Posts.Include(post => post.User)
+                    .AsNoTracking()
+                    .Where(post => post.UserId == id)
+                    .ToListAsync();
+
+                result.Add(_mappingService.MapUserPage(posts));
             }
 
             return result;
@@ -58,23 +65,25 @@ namespace Services.Providers
 
         public override async Task<IEnumerable<PostModel>> GetAllPostsAsync()
         {
-            var posts = await _context.Posts
-                .Include(post => post.User)
+            _context.ChangeTracker.Clear();
+
+            var posts = await _context.Posts.Include(post => post.User)
                 .AsNoTracking()
                 .ToListAsync();
+
             return posts.Select(post => _mappingService.MapPost(post, post.User));
         }
 
         public override async Task<IEnumerable<LikesPerPostModel>> GetMostLikedPosts(int numberOfPosts)
         {
+            _context.ChangeTracker.Clear();
             var likes = await _context.Likes
                 .Include(like => like.Post)
                 .ThenInclude(post => post.User)
                 .AsNoTracking()
                 .ToListAsync();
 
-            return likes
-                .GroupBy(key => key.PostId)
+            return likes.GroupBy(key => key.PostId)
                 .OrderByDescending(group => group.Count())
                 .Take(numberOfPosts)
                 .Select(group =>
@@ -87,6 +96,7 @@ namespace Services.Providers
 
         public override async Task PutUsersAsync(IEnumerable<UpdateUserModel> models)
         {
+            _context.ChangeTracker.Clear();
             foreach (var model in models)
             {
                 var user = await _context.Users.FindAsync(model.Id);
@@ -100,8 +110,17 @@ namespace Services.Providers
             await _context.SaveChangesAsync();
         }
 
+        public override async Task DeleteUserPostsAsync(IEnumerable<int> ids)
+        {
+            foreach (var id in ids)
+            {
+                await _context.Posts.Where(x => x.UserId == id).ExecuteDeleteAsync();
+            }
+        }
+
         public override async Task ClearAllTablesAsync()
         {
+            _context.ChangeTracker.Clear();
             await _context.Likes.ExecuteDeleteAsync();
             await _context.Posts.ExecuteDeleteAsync();
             await _context.Users.ExecuteDeleteAsync();

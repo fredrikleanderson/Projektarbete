@@ -1,4 +1,5 @@
 ﻿using Data;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Options;
 using Models;
 using Services.Interfaces;
@@ -29,10 +30,11 @@ namespace Services.Providers
         public abstract Task PostPostsAsync(IEnumerable<CreatePostModel> models);
         public abstract Task PostLikesAsync(IEnumerable<CreateLikeModel> models);
         public abstract Task<IEnumerable<UserModel>> GetAllUsersAsync();
-        public abstract Task<IEnumerable<UserModel>> GetUsersByIdAsync(IEnumerable<UserModel> models);
+        public abstract Task<IEnumerable<UserPageModel>> GetUserPages(IEnumerable<int> ids);
         public abstract Task<IEnumerable<PostModel>> GetAllPostsAsync();
         public abstract Task<IEnumerable<LikesPerPostModel>> GetMostLikedPosts(int numberOfPosts);
         public abstract Task PutUsersAsync(IEnumerable<UpdateUserModel> models);
+        public abstract Task DeleteUserPostsAsync(IEnumerable<int> ids);
         public abstract Task ClearAllTablesAsync();
     }
 }

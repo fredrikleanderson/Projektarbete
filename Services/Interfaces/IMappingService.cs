@@ -9,6 +9,7 @@ namespace Services.Interfaces
         User MapUser(CreateUserModel model);
         UserModel MapUser(User user);
         void MapUser(User user, UpdateUserModel model);
+        UserPageModel MapUserPage(IEnumerable<Post> posts);
         Post MapPost(CreatePostModel model);
         PostModel MapPost(Post post, User user);
         Like MapLike(CreateLikeModel model);

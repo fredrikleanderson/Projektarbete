@@ -53,17 +53,22 @@ namespace DapperConnection
             }
         }
 
-        public override async Task<IEnumerable<UserModel>> GetUsersByIdAsync(IEnumerable<UserModel> models)
+        public override async Task<IEnumerable<UserPageModel>> GetUserPages(IEnumerable<int> ids)
         {
-            List<UserModel> result = new();
+            List<UserPageModel> result = new();
 
-            using (var connection = new SqlConnection(_connectionString))
+            using(var connection = new SqlConnection(_connectionString))
             {
-                foreach (var model in models)
+                foreach (var id in ids)
                 {
-                    var user = await connection.QuerySingleAsync<User>(_queryService.SelectUserById(model));
-                    if (user != null)
-                        result.Add(_mappingService.MapUser(user));
+                    var posts = await connection.QueryAsync<Post, User, Post>(_queryService.SelectUserWithPosts(id),
+                        (post, user) =>
+                        {
+                            post.User = user;
+                            return post;
+                        });
+
+                    result.Add(_mappingService.MapUserPage(posts));
                 }
             }
 
@@ -102,6 +107,17 @@ namespace DapperConnection
                 foreach (var model in models)
                 {
                     await connection.QueryAsync(_queryService.UpdateSingleUser(model));
+                }
+            }
+        }
+
+        public override async Task DeleteUserPostsAsync(IEnumerable<int> ids)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                foreach (var id in ids)
+                {
+                    await connection.QueryAsync(_queryService.DeleteUserPosts(id));
                 }
             }
         }

@@ -36,6 +36,26 @@ namespace Services.Providers
             user.Password = model.NewPassword ?? user.Password;
         }
 
+        public UserPageModel MapUserPage(IEnumerable<Post> posts)
+        {
+            var user = posts.First().User;
+            return new UserPageModel
+            {
+                User = new UserModel
+                {
+                    Id = user.Id,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Email = user.Email
+                },
+                Posts = posts.Select(post => new PostModel
+                {
+                    Id = post.Id,
+                    Text = post.Text,
+                })
+            };
+        }
+
         public Post MapPost(CreatePostModel model)
         {
             return new Post

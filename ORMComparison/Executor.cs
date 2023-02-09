@@ -29,13 +29,12 @@ namespace ORMComparison
             {
                 _resultService.AddResults(await InsertUsersAsync(execution.NumberOfUsers));
                 _resultService.AddResults(await RetrieveAllUsersAsync());
-                _resultService.AddResults(await RetrieveUsersByIdAsync(execution.NumberOfUsersToGetById));
                 _resultService.AddResults(await InsertPostsAsync(execution.NumberOfPostingUsers, execution.NumberOfPostsPerUser));
-                _resultService.AddResults(await RetrieveAllPostsAsync());
+                _resultService.AddResults(await RetrieveUserPagesAsync(execution.NumberOfUserPages));
                 _resultService.AddResults(await InsertLikesAsync(execution.NumberOfLikingUsers, execution.NumberOfLikesPerUser));
                 _resultService.AddResults(await RetrieveMostLikedPostsAsync(execution.NumberOfMostLikedPosts));
                 _resultService.AddResults(await UpdateUsersAsync(execution.NumberOfUsersToUpdate));
-                _resultService.AddResults(await ClearDatabaseAsync());
+                _resultService.AddResults(await RemoveUserPosts(execution.NumberOfUsersDeletingTheirPosts));
             }
 
             _resultService.PrintResults();
@@ -58,16 +57,6 @@ namespace ORMComparison
             return new Result[] { dapperResult, efResult };
         }
 
-        private async Task<IEnumerable<Result>> RetrieveUsersByIdAsync(int numberOfUsersToGetById)
-        {
-            var taskDescription = $"Retrieving {numberOfUsersToGetById} users by their ID";
-            var dapperUsers = await _dapperService.GetAllUsersAsync();
-            var efUsers = await _entityFrameworkService.GetAllUsersAsync();
-            var dapperResult = await _resultService.GetResultFromTaskAsync(_dapperService.GetUsersByIdAsync(dapperUsers.Take(numberOfUsersToGetById)), taskDescription, ORMType.Dapper, MethodType.READ);
-            var efResult = await _resultService.GetResultFromTaskAsync(_entityFrameworkService.GetUsersByIdAsync(efUsers.Take(numberOfUsersToGetById)), taskDescription, ORMType.EntityFrameWork, MethodType.READ);
-            return new Result[] { dapperResult, efResult };
-        }
-
         private async Task<IEnumerable<Result>> InsertPostsAsync(int numberOfPostingUsers, int numberOfPostsPerUser)
         {
             var taskDescrption = $"Inserting {numberOfPostsPerUser} posts per user for {numberOfPostingUsers} users";
@@ -80,11 +69,13 @@ namespace ORMComparison
             return new Result[] { dapperResult, efResult };
         }
 
-        private async Task<IEnumerable<Result>> RetrieveAllPostsAsync()
+        private async Task<IEnumerable<Result>> RetrieveUserPagesAsync(int numberOfUserPages)
         {
-            var taskDescrption = "Retrieving all posts";
-            var dapperResult = await _resultService.GetResultFromTaskAsync(_dapperService.GetAllPostsAsync(), taskDescrption, ORMType.Dapper, MethodType.READ);
-            var efResult = await _resultService.GetResultFromTaskAsync(_entityFrameworkService.GetAllPostsAsync(), taskDescrption, ORMType.EntityFrameWork, MethodType.READ);
+            var taskDescription = $"Retrieving {numberOfUserPages} user profiles";
+            var dapperPosts = _dapperService.GetAllPostsAsync().Result.ToArray();
+            var efPosts = _entityFrameworkService.GetAllPostsAsync().Result.ToArray();
+            var dapperResult = await _resultService.GetResultFromTaskAsync(_dapperService.GetUserPages(dapperPosts.Take(numberOfUserPages).Select(post => post.User.Id)), taskDescription, ORMType.Dapper, MethodType.READ);
+            var efResult = await _resultService.GetResultFromTaskAsync(_entityFrameworkService.GetUserPages(efPosts.Take(numberOfUserPages).Select(post => post.User.Id)), taskDescription, ORMType.EntityFrameWork, MethodType.READ);
             return new Result[] { dapperResult, efResult };
         }
 
@@ -122,11 +113,13 @@ namespace ORMComparison
             return new Result[] { dapperResult, efResult };
         }
 
-        private async Task<IEnumerable<Result>> ClearDatabaseAsync()
+        private async Task<IEnumerable<Result>> RemoveUserPosts(int numberOfUsersDeletingTheirPosts)
         {
-            var taskDescription = "Clearing database";
-            var dapperResult = await _resultService.GetResultFromTaskAsync(_dapperService.ClearAllTablesAsync(), taskDescription, ORMType.Dapper, MethodType.DELETE);
-            var efResult = await _resultService.GetResultFromTaskAsync(_entityFrameworkService.ClearAllTablesAsync(), taskDescription, ORMType.EntityFrameWork, MethodType.DELETE);
+            var taskDescription = $"Deleting all posts by {numberOfUsersDeletingTheirPosts} users";
+            var dapperUsers = await _dapperService.GetAllUsersAsync();
+            var efUsers = await _entityFrameworkService.GetAllUsersAsync();
+            var dapperResult = await _resultService.GetResultFromTaskAsync(_dapperService.DeleteUserPostsAsync(dapperUsers.Select(user => user.Id)), taskDescription, ORMType.Dapper, MethodType.DELETE);
+            var efResult = await _resultService.GetResultFromTaskAsync(_entityFrameworkService.DeleteUserPostsAsync(efUsers.Select(user => user.Id)), taskDescription, ORMType.EntityFrameWork, MethodType.DELETE);
             return new Result[] { dapperResult, efResult };
         }
     }
