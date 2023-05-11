@@ -8,11 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="microsoft.entityframeworkcore.design" Version="7.0.2">
+    <PackageReference Include="microsoft.entityframeworkcore.design" Version="7.0.5">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="microsoft.extensions.hosting" Version="7.0.0" />
+    <PackageReference Include="microsoft.extensions.hosting" Version="7.0.1" />
   </ItemGroup>
 
   <ItemGroup>

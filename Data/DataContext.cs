@@ -21,11 +21,12 @@ namespace Data
             modelBuilder.Entity<User>().Property(user => user.LastName).HasMaxLength(50).IsRequired();
             modelBuilder.Entity<User>().Property(user => user.Email).HasMaxLength(50).IsRequired();
             modelBuilder.Entity<User>().Property(user => user.Password).HasMaxLength(50).IsRequired();
+
         }
 
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
-
+  
         }
     }
 }

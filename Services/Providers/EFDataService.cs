@@ -1,5 +1,6 @@
 ﻿using Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Options;
 using Models;
 using Services.Interfaces;
@@ -19,35 +20,30 @@ namespace Services.Providers
 
         public override async Task PostUsersAsync(IEnumerable<CreateUserModel> models)
         {
-            _context.ChangeTracker.Clear();
             await _context.AddRangeAsync(models.Select(model => _mappingService.MapUser(model)));
             await _context.SaveChangesAsync();
         }
 
         public override async Task PostPostsAsync(IEnumerable<CreatePostModel> models)
         {
-            _context.ChangeTracker.Clear();
             await _context.AddRangeAsync(models.Select(model => _mappingService.MapPost(model)));
             await _context.SaveChangesAsync();
         }
 
         public override async Task PostLikesAsync(IEnumerable<CreateLikeModel> models)
         {
-            _context.ChangeTracker.Clear();
             await _context.AddRangeAsync(models.Select(model => _mappingService.MapLike(model)));
             await _context.SaveChangesAsync();
         }
 
         public override async Task<IEnumerable<UserModel>> GetAllUsersAsync()
         {
-            _context.ChangeTracker.Clear();
             var users = await _context.Users.AsNoTracking().ToListAsync();
             return users.Select(user => _mappingService.MapUser(user));
         }
 
         public override async Task<IEnumerable<UserPageModel>> GetUserPages(IEnumerable<int> ids)
         {
-            _context.ChangeTracker.Clear();
             List<UserPageModel> result = new();
 
             foreach (var id in ids)
@@ -65,8 +61,6 @@ namespace Services.Providers
 
         public override async Task<IEnumerable<PostModel>> GetAllPostsAsync()
         {
-            _context.ChangeTracker.Clear();
-
             var posts = await _context.Posts.Include(post => post.User)
                 .AsNoTracking()
                 .ToListAsync();
@@ -76,7 +70,6 @@ namespace Services.Providers
 
         public override async Task<IEnumerable<LikesPerPostModel>> GetMostLikedPosts(int numberOfPosts)
         {
-            _context.ChangeTracker.Clear();
             var likes = await _context.Likes
                 .Include(like => like.Post)
                 .ThenInclude(post => post.User)
@@ -96,7 +89,6 @@ namespace Services.Providers
 
         public override async Task PutUsersAsync(IEnumerable<UpdateUserModel> models)
         {
-            _context.ChangeTracker.Clear();
             foreach (var model in models)
             {
                 var user = await _context.Users.FindAsync(model.Id);
@@ -120,7 +112,6 @@ namespace Services.Providers
 
         public override async Task ClearAllTablesAsync()
         {
-            _context.ChangeTracker.Clear();
             await _context.Likes.ExecuteDeleteAsync();
             await _context.Posts.ExecuteDeleteAsync();
             await _context.Users.ExecuteDeleteAsync();
